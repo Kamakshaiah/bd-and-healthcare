@@ -1,0 +1,23 @@
+
+Call:
+lm(formula = knowledge ~ big + data + analytics + technology, 
+    data = bdf)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.4298 -0.4642 -0.3197  0.0324  4.9785 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)  
+(Intercept)  0.55581    0.36917   1.506   0.1409  
+big         -0.09973    0.12879  -0.774   0.4438  
+data         0.01017    0.08831   0.115   0.9090  
+analytics   -0.08343    0.10772  -0.775   0.4436  
+technology   0.42190    0.17793   2.371   0.0232 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.305 on 36 degrees of freedom
+Multiple R-squared:  0.1482,	Adjusted R-squared:  0.05357 
+F-statistic: 1.566 on 4 and 36 DF,  p-value: 0.2044
+

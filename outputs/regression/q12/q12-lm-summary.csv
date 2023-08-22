@@ -1,0 +1,48 @@
+Response business :
+
+Call:
+lm(formula = business ~ big + data + analytics + technology, 
+    data = bdf)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.7142 -0.2091 -0.0879  0.1241  5.2711 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  0.21951    0.30353   0.723    0.474    
+big         -0.07118    0.10590  -0.672    0.506    
+data         0.02425    0.07261   0.334    0.740    
+analytics   -0.08469    0.08857  -0.956    0.345    
+technology   0.64773    0.14630   4.428 8.51e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.073 on 36 degrees of freedom
+Multiple R-squared:  0.3614,	Adjusted R-squared:  0.2904 
+F-statistic: 5.093 on 4 and 36 DF,  p-value: 0.002342
+
+
+Response applications :
+
+Call:
+lm(formula = applications ~ big + data + analytics + technology, 
+    data = bdf)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.69466 -0.27602 -0.14079 -0.04202  1.88023 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)  0.06275    0.14760   0.425    0.673
+big         -0.04233    0.05149  -0.822    0.416
+data         0.03542    0.03531   1.003    0.322
+analytics    0.04953    0.04307   1.150    0.258
+technology   0.11363    0.07114   1.597    0.119
+
+Residual standard error: 0.5217 on 36 degrees of freedom
+Multiple R-squared:  0.1869,	Adjusted R-squared:  0.09655 
+F-statistic: 2.069 on 4 and 36 DF,  p-value: 0.1053
+
+

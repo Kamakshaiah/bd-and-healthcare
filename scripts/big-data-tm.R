@@ -60,9 +60,9 @@ length(names(bigdataf))
 bigdataf[, (names(bigdataf) %in% c('from'))]
 
 bigdataframe <- subset(bigdataf, select = -c(about, the, and, are, from, with, being, this, that, have, has, use, using, can, could, will, would, should))
-length(names(bigdataframe)) # 2971
+length(names(bigdataframe)) # 2970
 bigdataframe <- bigdataframe[, 123:2970]
-length(names(bigdataframe)) # 2849
+length(names(bigdataframe)) # 2848
 
 # feature selection 
 max(apply(bigdataframe, 2, mean)) # 4.780488
@@ -71,7 +71,7 @@ mean(apply(bigdataframe, 2, mean)) # 0.06214031
 (4.780488 + 0.02439024)/2 # average of max-mean and min-mean - 2.402439
 
 bdf <- subset(bigdataframe, select = which(apply(bigdataframe, 2, mean) > 0.24))
-length(names(bdf))
+length(names(bdf)) #106
 
 # install.packages(c("FactoMinerR", "factoextra"))
 
@@ -121,7 +121,12 @@ bdat <- rowSums(bdt)
 bigdataframe$bda <- bdav
 bigdataframe$bdt <- bdat
 
-fit <- manova(cbind(clinical, medical, disease, diseases, treatment) ~ big + data + analytics, data = bigdataframe)
+fit <- manova(cbind(healthcare, outcomes) ~ big + data + analytics, data = bigdataframe)
+summary(fit)
+anova(fit) # data significant 
+
+
+fit <- manova(cbind(clinical, medical, disease, diseases, treatment, healthcare, outcomes) ~ big + data + analytics, data = bigdataframe)
 summary(fit)
 anova(fit) # data significant 
 
@@ -130,11 +135,11 @@ summary(fit)
 anova(fit) # data significant 
 
 
-fit <- manova(cbind(clinical, medical, disease, diseases, treatment) ~ bda, data = bigdataframe)
+fit <- manova(cbind(clinical, medical, disease, diseases, treatment, healthcare, outcomes) ~ bda, data = bigdataframe)
 summary(fit)
 anova(fit)
 
-fit <- manova(cbind(clinical, medical, disease, diseases, treatment) ~ bdt, data = bigdataframe)
+fit <- manova(cbind(clinical, medical, disease, diseases, treatment, healthcare, outcomes) ~ bdt, data = bigdataframe)
 summary(fit)
 anova(fit)
 
@@ -148,7 +153,7 @@ write.csv(fit$r.scores, 'bda-rscores.csv')
 
 structure.diagram(fit)
 
-sum(names(bigdataframe) %in% c("fraud"))
+sum(names(bigdataframe) %in% c("outcomes"))
 bigdataframe [, c("decisions")]
 
 bdadf <- bigdataframe[, c('big', 'data', 'analytics', 'technology', 'clinical', 'medical', 'social', 'business', 'management', 'security', 'risk', 'fraud', 'decisions', 'model', 'approach', 'patients', 'disease', 'healthcare')]
@@ -156,6 +161,24 @@ names(bdadf)
 head(bdadf)
 
 scree(bdadf) # 2/7 factor solutions (FA & PC)
+
+fit <- fa(bdadf, 2, fm='wls')
+loadings(fit)
+# getwd()
+write.csv(loadings(fit), 'bda-2fs-loadings.csv')
+write.csv(fit$r.scores, 'bda-2fs-rscores.csv')
+
+structure.diagram(fit)
+
+
+fit <- fa(bdadf, 4, fm='wls')
+loadings(fit)
+# getwd()
+write.csv(loadings(fit), 'bda-4fs-loadings.csv')
+write.csv(fit$r.scores, 'bda-4fs-rscores.csv')
+
+structure.diagram(fit)
+
 
 fit <- fa(bdadf, 7, fm='wls')
 loadings(fit)

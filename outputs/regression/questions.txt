@@ -1,0 +1,12 @@
+1. Big data models and technologies
+2. Big data analytics and visualization
+3. Cloud computing and big data in E-business
+4. Cloud and IoT in E-Business
+5. Big data and NoSQL databases
+6. Big data and knowledge engineering
+7. E-business data mining and data extraction
+8. Machine learning and big data in E-business
+9. Security, privacy, and trust in E-business
+10. AI-based models for decision-making in business
+11. Reliability and trustworthiness of the AI-based decision-making models
+12. AI and big data in business applications

@@ -1,0 +1,5 @@
+          Df   Pillai approx F num Df den Df Pr(>F)
+big        1 0.105434  1.37504      3     35 0.2665
+data       1 0.049317  0.60522      3     35 0.6160
+analytics  1 0.030753  0.37016      3     35 0.7750
+Residuals 37                                       
