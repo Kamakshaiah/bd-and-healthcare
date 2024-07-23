@@ -2,9 +2,19 @@
 # https://stackoverflow.com/questions/32225770/r-tm-removewords-function-not-removing-words
 # https://stackoverflow.com/questions/51942767/r-tm-error-of-transformation-drops-documents
 # https://rstudio-pubs-static.s3.amazonaws.com/132792_864e3813b0ec47cb95c7e1e2e2ad83e7.html
+
 # data input 
 
+path <- readline()
+inputfilepath <- gsub('\\\\', '//', path)
+
+#D:\Research\PAPERS\big data\big-data-healthcare\outputs
+
+path <- readline()
+outputpath <- gsub('\\\\', '//', path)
+
 abstracts <- read.csv(file.choose(), encoding="UTF-8")
+names(abstracts)
 abs <- abstracts$Abstract
 class(abs)
 dim(abs)
@@ -31,17 +41,33 @@ acorp <- tm_map(acorp, stripWhitespace)
 tm::inspect(acorp)
 dim(tm::inspect(acorp))
 
-adtm <- DocumentTermMatrix(abscorp)
+adtm <- DocumentTermMatrix(acorp)
 # adtm <- DocumentTermMatrix(abscorp, control = list(weighting = weightTfIdf))
 tm::inspect(adtm[10:16, ] )
-dim(adtm)
+dim(adtm) # [1]   41 2324
 adtm$dimnames[[1]]
 length(adtm$dimnames[[2]])
 
+bigdf <- removeSparseTerms(adtm, 0.9)
 bigdataf <- data.frame(as.matrix(adtm), stringsAsFactors=False)
-dim(bigdataf)
+dim(bigdataf) # [1]  41 207
 length(names(bigdataf))
 
+names(bigdataf)
+bigdataframe <- subset(bigdataf, select = -c(across, address, advanced, aims, along, also, among, 
+                                             areas, associated, authors, based, become, benefits, best,
+                                             better, can, chapter, create, current, critical, different, 
+                                             discuss, effective, efficiency, efficient, etc, existing, evaluate,
+                                             facilitating, facing, factors, fast, field, findings, focus,
+                                             furthermore, future, general, given, growth, however, human, 
+                                             identify, identifying, ieee, impact, impacts, important, improve, 
+                                             improved, improving, include, including, individual, industry, 
+                                             issues, key, lack, large, life, like, make, making, many, method, methods, 
+                                             monitoring, nature, need, new, novel, number, objective, one, outcome, outcomes, 
+                                             overall, paper, past, population, potential, practice, presents, primary, 
+                                             provide, provides, recent, reduce, reducing, related, review, risk, role, 
+                                             service, services, specific, springer, studies, study, support, terms, thus, time, 
+                                             types, use, used, using, value, various, way, well, will, within, work, world, years))
 # adtmsparse = removeSparseTerms(adtm, 0.30)
 # dim(adtmsparse)
 # 
@@ -52,21 +78,22 @@ length(names(bigdataf))
 # length(findFreqTerms(adtmsparse, 30))
 # dataf <- findFreqTerms(adtmsparse, 30)
 
-bigdataf[, (names(bigdataf) %in% c('from'))]
-
-bigdataframe <- subset(bigdataf, select = -c(about, the, and, are, from, with, being, this, that, have, has, use, using, can, could, will, would, should))
-length(names(bigdataframe)) # 2970
-bigdataframe <- bigdataframe[, 123:2970]
-length(names(bigdataframe)) # 2848
+# bigdataf[, (names(bigdataf) %in% c('from'))]
+# 
+# bigdf <- removeSparseTerms(as.matrix(bigdataf), 0.9)
+# bigdataframe <- subset(bigdataf, select = -c(the, and, are, from, with, being, this, that, have, has, use, using, can, could, will, would, should))
+# length(names(bigdataframe)) # 2970
+# bigdataframe <- bigdataframe[, 123:2970]
+# length(names(bigdataframe)) # 2848
 
 # feature selection 
-max(apply(bigdataframe, 2, mean)) # 4.780488
-min(apply(bigdataframe, 2, mean)) # 0.02439024
-mean(apply(bigdataframe, 2, mean)) # 0.06214031
-(4.780488 + 0.02439024)/2 # average of max-mean and min-mean - 2.402439
+# max(apply(bigdataframe, 2, mean)) # 4.780488
+# min(apply(bigdataframe, 2, mean)) # 0.02439024
+# mean(apply(bigdataframe, 2, mean)) # 0.06214031
+# (4.780488 + 0.02439024)/2 # average of max-mean and min-mean - 2.402439
 
-bdf <- subset(bigdataframe, select = which(apply(bigdataframe, 2, mean) > 0.24))
-length(names(bdf)) #106
+# bdf <- subset(bigdataframe, select = which(apply(bigdataframe, 2, mean) > 0.24))
+# length(names(bdf)) #106
 
 # install.packages(c("FactoMinerR", "factoextra"))
 
@@ -333,46 +360,50 @@ lmDiagram(update(fit, applications ~ .))
 
 library(psych)
 
-fit <- fa(bigdataframe, 2)
-loadings(fit)
-# getwd()
-write.csv(loadings(fit), 'bda-loadings.csv')
-write.csv(fit$r.scores, 'bda-rscores.csv')
-
-structure.diagram(fit)
-
-sum(names(bigdataframe) %in% c("outcomes"))
-bigdataframe [, c("decisions")]
-
-bdadf <- bigdataframe[, c('big', 'data', 'analytics', 'technology', 'clinical', 'medical', 'social', 'business', 'management', 'security', 'risk', 'fraud', 'decisions', 'model', 'approach', 'patients', 'disease', 'healthcare')]
+bdadf <- bigdataf[, c('big', 'data', 'analytics', 'technology', 'clinical', 'medical', 'social', 'business', 'management', 'security', 'risk', 'fraud', 'decisions', 'model', 'approach', 'patients', 'disease', 'healthcare')]
 names(bdadf)
 head(bdadf)
 
 scree(bdadf) # 2/7 factor solutions (FA & PC)
 
-fit <- fa(bdadf, 2, fm='wls')
-loadings(fit)
+fit <- fa(bdadf, 1, fm='wls')
+# loadings(fit)
 # getwd()
-write.csv(loadings(fit), 'bda-2fs-loadings.csv')
-write.csv(fit$r.scores, 'bda-2fs-rscores.csv')
-
+write.csv(loadings(fit), file.path(outputpath, 'bda-1fs-loadings.csv'))
+write.csv(fit$r.scores, file.path(outputpath, 'fa/bda-1fs-rscores.csv'))
 structure.diagram(fit)
 
+fit <- fa(bdadf, 2, fm='wls')
+# loadings(fit)
+# getwd()
+write.csv(loadings(fit), file.path(outputpath, 'fa/bda-2fs-loadings.csv'))
+write.csv(fit$r.scores, file.path(outputpath, 'fa/bda-2fs-rscores.csv'))
+structure.diagram(fit)
+
+fit <- fa(bdadf, 3, fm='wls')
+# loadings(fit)
+# getwd()
+write.csv(loadings(fit), file.path(outputpath, 'fa/bda-3fs-loadings.csv'))
+write.csv(fit$r.scores, file.path(outputpath, 'fa/bda-3fs-rscores.csv'))
+structure.diagram(fit)
 
 fit <- fa(bdadf, 4, fm='wls')
-loadings(fit)
+# loadings(fit)
 # getwd()
-write.csv(loadings(fit), 'bda-4fs-loadings.csv')
-write.csv(fit$r.scores, 'bda-4fs-rscores.csv')
-
+write.csv(loadings(fit), file.path(outputpath, 'fa/bda-4fs-loadings.csv'))
+write.csv(fit$r.scores, file.path(outputpath, 'fa/bda-4fs-rscores.csv'))
 structure.diagram(fit)
 
-
-fit <- fa(bdadf, 7, fm='wls')
-loadings(fit)
+fit <- fa(bdadf, 5, fm='wls')
+# loadings(fit)
 # getwd()
-write.csv(loadings(fit), 'bda-7fs-loadings.csv')
-write.csv(fit$r.scores, 'bda-7fs-rscores.csv')
-
+write.csv(loadings(fit), file.path(outputpath, 'fa/bda-5fs-loadings.csv'))
+write.csv(fit$r.scores, file.path(outputpath, 'fa/bda-5fs-rscores.csv'))
 structure.diagram(fit)
 
+fit <- fa(bdadf, 6, fm='wls')
+# loadings(fit)
+# getwd()
+write.csv(loadings(fit), file.path(outputpath, 'fa/bda-5fs-loadings.csv'))
+write.csv(fit$r.scores, file.path(outputpath, 'fa/bda-5fs-rscores.csv'))
+structure.diagram(fit)
